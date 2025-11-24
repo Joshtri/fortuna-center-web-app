@@ -1,36 +1,211 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎯 Fortuna Center - Broadcast Platform
 
-## Getting Started
+> Platform broadcast minimalis dengan design premium untuk streaming YouTube content dengan real-time analytics.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8?style=for-the-badge&logo=tailwindcss)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript)
+
+## ✨ Features
+
+### 🎨 **Premium Design**
+- Dark mode dengan glassmorphism effects
+- Smooth animations menggunakan Framer Motion
+- Responsive & mobile-first design
+- Modern gradient accents dengan Fortuna gold theme
+
+### 📊 **Admin Dashboard**
+- Real-time statistics & analytics
+- Interactive charts (Area, Pie, Bar)
+- Session management
+- Viewer engagement tracking
+- Quick actions panel
+
+### 🎥 **Broadcast System**
+- YouTube video integration
+- Live session indicators
+- Viewer count tracking
+- Session history & analytics
+
+### 🛠️ **Tech Stack**
+- **Framework**: Next.js 16 with App Router
+- **UI Library**: HeroUI 2.8.5
+- **Styling**: Tailwind CSS 4
+- **Icons**: Iconify/React (Solar icon set)
+- **Charts**: Recharts
+- **Animations**: Framer Motion
+- **Database**: Drizzle ORM
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ atau Bun
+- npm atau bun package manager
+
+### Installation
 
 ```bash
+# Clone repository
+git clone <repository-url>
+cd broadcast-fortuna-center-app
+
+# Install dependencies
+npm install
+# atau
+bun install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+# atau
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+├── page.tsx              # 🏠 Landing page (public)
+├── admin/                # 👨‍💼 Admin panel
+│   ├── page.tsx          # Dashboard
+│   ├── sessions/         # Session management
+│   ├── analytics/        # Analytics & charts
+│   └── settings/         # System settings
+└── live/[sessionId]/     # 📺 Live broadcast viewer
 
-## Learn More
+features/
+└── admin/components/     # 🧩 Admin-specific components
 
-To learn more about Next.js, take a look at the following resources:
+@components/              # 🌐 Global reusable components
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Lihat [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) untuk detail lengkap.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 Pages Overview
 
-## Deploy on Vercel
+### Public Pages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### **Landing Page** (`/`)
+- Hero section dengan call-to-action
+- Features showcase
+- Modern design dengan gradient effects
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Admin Pages
+
+#### **Dashboard** (`/admin`)
+- 📈 Real-time statistics
+- 📊 Viewer trends chart
+- ⚡ Quick actions
+- 📝 Recent sessions
+
+#### **Sessions** (`/admin/sessions`)
+- 🔍 Search & filter
+- 📺 Session list dengan thumbnails
+- 📊 Session statistics
+- 🗑️ Session management
+
+#### **Analytics** (`/admin/analytics`)
+- 📈 Performance metrics
+- 📊 Multiple chart types
+- 🏆 Top performing sessions
+- ⏰ Hourly distribution
+
+#### **Settings** (`/admin/settings`)
+- ⚙️ General configuration
+- 🎥 Broadcast settings
+- 🔔 Notifications
+- ⚠️ Danger zone
+
+## 🎨 Design System
+
+### Colors
+- **Primary**: `#fbbf24` (Amber - Fortuna gold)
+- **Background**: `#0a0a0a` (Dark)
+- **Foreground**: `#ededed` (Light)
+
+### Components
+- Glassmorphism panels
+- Smooth hover effects
+- Micro-animations
+- Responsive layouts
+
+## 🛠️ Development
+
+### Available Scripts
+
+```bash
+# Development
+npm run dev          # Start dev server
+
+# Production
+npm run build        # Build for production
+npm start            # Start production server
+
+# Database
+npm run db:push      # Push schema to database
+
+# Linting
+npm run lint         # Run ESLint
+```
+
+### Environment Variables
+
+Create a `.env` file:
+
+```env
+# Database
+DATABASE_URL=your_database_url
+
+# Add other environment variables as needed
+```
+
+## 📦 Dependencies
+
+### Core
+- `next` - React framework
+- `react` & `react-dom` - UI library
+- `typescript` - Type safety
+
+### UI & Styling
+- `@heroui/react` - UI components
+- `tailwindcss` - Utility-first CSS
+- `framer-motion` - Animations
+- `@iconify/react` - Icon library
+
+### Data & Charts
+- `recharts` - Chart library
+- `drizzle-orm` - Database ORM
+- `axios` - HTTP client
+
+### Utilities
+- `clsx` - Conditional classnames
+- `date-fns` - Date manipulation
+
+## 🎯 Roadmap
+
+- [ ] Authentication & authorization
+- [ ] Real-time WebSocket integration
+- [ ] YouTube API integration
+- [ ] User management system
+- [ ] Advanced analytics
+- [ ] Export reports functionality
+- [ ] Multi-language support
+- [ ] Dark/Light theme toggle
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+For questions or support, please contact [your-email@example.com]
+
+---
+
+**Made with ❤️ using Next.js, Tailwind CSS, and HeroUI**
