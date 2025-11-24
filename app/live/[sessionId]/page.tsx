@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaShareAlt, FaYoutube, FaCopy, FaCheck } from 'react-icons/fa';
+// import { FaShareAlt, FaYoutube, FaCopy, FaCheck } from 'react-icons/fa';
+import { Icon } from '@iconify/react';
 import axios from 'axios';
+
 
 export default function BroadcastPage() {
   const params = useParams();
@@ -75,7 +77,7 @@ export default function BroadcastPage() {
             onClick={handleCopyLink}
             className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all text-xs font-medium"
           >
-            {copied ? <FaCheck className="text-green-500" /> : <FaShareAlt />}
+            {copied ? <Icon icon="icon-park-outline:check" className="text-green-500" /> : <Icon icon="icon-park-outline:share" />}
             {copied ? 'COPIED' : 'SHARE LINK'}
           </button>
         </div>
