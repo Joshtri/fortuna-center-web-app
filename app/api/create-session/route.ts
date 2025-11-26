@@ -8,8 +8,7 @@
 //     const body = await request.json();
 //     const { youtubeVideoId } = body;
 
-//     if (!youtubeVideoId) {
-//       return NextResponse.json({ error: 'youtubeVideoId is required' }, { status: 400 });
+//     if (!youtubeVideoId) {66 is required' }, { status: 400 });
 //     }
 
 //     const sessionId = nanoid(10);

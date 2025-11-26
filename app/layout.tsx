@@ -1,9 +1,9 @@
-"use client";
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+//@ts-expect-error import React from "react";
 import "./globals.css";
-import { HeroUIProvider } from "@heroui/react";
+import Providers from "@/providers";
+import { ClerkProviderWrapper } from "@/lib/ClerkProviderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata: Metadata = {
-//   title: "Fortuna Center Broadcast",
-//   description: "Minimalist Broadcast System for YouTube",
-// };
+export const metadata: Metadata = {
+  title: "Fortuna Center Broadcast",
+  description: "Minimalist Broadcast System for YouTube",
+};
 
 export default function RootLayout({
   children,
@@ -26,14 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <HeroUIProvider>
-          {children}
-        </HeroUIProvider>
-      </body>
-    </html>
+    <ClerkProviderWrapper>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    </ClerkProviderWrapper>
   );
 }
