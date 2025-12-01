@@ -118,6 +118,7 @@ export const getSystemMenuItems = (): NavigationItem[] => {
 export const adminSidebarNavigation: AdminNavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: (props) => <Icon icon="solar:home-2-bold-duotone" {...props} /> },
   { name: "Sessions", href: "/sessions", icon: (props) => <Icon icon="solar:video-library-bold-duotone" {...props} /> },
+  { name: "Classes", href: "/classes", icon: (props) => <Icon icon="solar:book-bookmark-bold-duotone" {...props} /> },
 //   { name: "Posts", href: "/posts", icon: (props) => <Icon icon="lucide:file-text" {...props} /> },
 //   { name: "Labels", href: "/labels", icon: (props) => <Icon icon="lucide:tags" {...props} /> },
   { name: "Users", href: "/users", icon: (props) => <Icon icon="lucide:users" {...props} /> },

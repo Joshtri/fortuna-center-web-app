@@ -2,6 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export function Footer() {
@@ -13,11 +14,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center shadow-md shadow-blue-600/20">
-                <Icon
-                  icon="solar:diploma-bold"
-                  className="text-lg text-white"
-                />
+              <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-md bg-white p-1">
+                <div className="relative w-full h-full">
+                  <Image
+                    src="/apple-touch-icon.png"
+                    alt="Fortuna Center"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               </div>
               <div>
                 <h3 className="font-bold text-lg text-gray-900">

@@ -206,24 +206,16 @@ export default function Navbar({
           <div className="flex items-center gap-12">
             {/* Logo */}
             <NextLink href="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10 transition-transform group-hover:scale-105">
-                {isDark ? (
+              <div className="relative w-10 h-10 rounded-full overflow-hidden transition-transform group-hover:scale-105 shadow-sm bg-white p-1">
+                <div className="relative w-full h-full">
                   <Image
-                    src={logoDark || "/fortuna-center-logo-dark.png"}
+                    src={logo || logoDark || "/apple-touch-icon.png"}
                     alt={brandName}
                     fill
                     className="object-contain"
                     priority
                   />
-                ) : (
-                  <Image
-                    src={logo || "/fortuna-center-logo-light.png"}
-                    alt={brandName}
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                )}
+                </div>
               </div>
               <span className="font-bold text-xl text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {brandName}

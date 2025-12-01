@@ -1,2 +1,4 @@
 export * from './session.schema';
-export * from './user.schema';
+export * from './users.schema';
+export * from './class.schema';
+export * from './assignment.schema';

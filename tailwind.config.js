@@ -16,12 +16,12 @@ const config = {
             },
             colors: {
                 primary: {
-                    DEFAULT: "#06b6d4", // Cyan 500 (Blue-Green)
+                    DEFAULT: "#D32F2F", // Red 700
                     foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#3b82f6", // Blue 500
-                    foreground: "#ffffff",
+                    DEFAULT: "#FBC02D", // Yellow 700
+                    foreground: "#171717", // Dark text for contrast on yellow
                 },
             },
 

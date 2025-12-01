@@ -3,10 +3,13 @@
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 
+import GeometricBackground from "@/components/backgrounds/GeometricBackground";
+
 export default function AboutSection() {
   return (
-    <section id="about" className="py-24 bg-gray-50">
-      <div className="container mx-auto px-6">
+    <section id="about" className="py-24 bg-gray-50 relative overflow-hidden">
+      <GeometricBackground />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             About Fortuna Center
@@ -48,7 +51,7 @@ export default function AboutSection() {
               transition={{ delay: idx * 0.1, duration: 0.5 }}
               className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 mb-6">
+              <div className="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center text-primary mb-6">
                 <Icon icon={item.icon} className="text-3xl" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">

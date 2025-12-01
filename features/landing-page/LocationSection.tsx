@@ -1,11 +1,13 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import LocationBackground from "@/components/backgrounds/LocationBackground";
 
 export default function LocationSection() {
   return (
-    <section className="py-24 bg-white">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-white relative overflow-hidden">
+      <LocationBackground />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-1/3">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
@@ -13,12 +15,12 @@ export default function LocationSection() {
             </h2>
             <p className="text-gray-600 mb-8 leading-relaxed">
               We are conveniently located in Kupang. Come visit us to see our
-              facilities and meet our team. 
+              facilities and meet our team.
             </p>
 
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-primary shrink-0">
                   <Icon icon="solar:map-point-bold" className="text-xl" />
                 </div>
                 <div>
@@ -31,7 +33,7 @@ export default function LocationSection() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-primary shrink-0">
                   <Icon icon="solar:clock-circle-bold" className="text-xl" />
                 </div>
                 <div>
@@ -47,7 +49,7 @@ export default function LocationSection() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-primary shrink-0">
                   <Icon icon="solar:phone-bold" className="text-xl" />
                 </div>
                 <div>

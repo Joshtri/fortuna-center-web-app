@@ -2,11 +2,13 @@
 
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
+import ActivitiesBackground from "@/components/backgrounds/ActivitiesBackground";
 
 export default function ActivitiesSection() {
   return (
-    <section id="activities" className="py-20">
-      <div className="container mx-auto px-6">
+    <section id="activities" className="py-20 bg-gray-50 relative overflow-hidden">
+      <ActivitiesBackground />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

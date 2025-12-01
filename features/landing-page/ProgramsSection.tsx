@@ -2,11 +2,15 @@
 
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+
+import PatternBackground from "@/components/backgrounds/PatternBackground";
 
 export default function ProgramsSection() {
   return (
-    <section id="programs" className="py-24 bg-white">
-      <div className="container mx-auto px-6">
+    <section id="programs" className="py-24 bg-white relative overflow-hidden">
+      <PatternBackground />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
           <div className="max-w-xl">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -32,7 +36,7 @@ export default function ProgramsSection() {
               transition={{ duration: 0.6 }}
               className="order-2 lg:order-1"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-red-600 text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-primary text-sm font-medium mb-6">
                 <Icon
                   icon="solar:record-circle-bold"
                   className="animate-pulse"
@@ -61,7 +65,7 @@ export default function ProgramsSection() {
                   >
                     <Icon
                       icon="solar:check-circle-bold"
-                      className="text-blue-600 text-xl"
+                      className="text-primary text-xl"
                     />
                     {item}
                   </li>
@@ -69,13 +73,13 @@ export default function ProgramsSection() {
               </ul>
 
               <div className="flex gap-4 mt-8">
-                <a
+                <Link
                   href="/demo"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20"
                 >
                   <Icon icon="solar:play-circle-bold" className="text-xl" />
                   See Live Demo
-                </a>
+                </Link>
               </div>
             </motion.div>
             <motion.div
@@ -112,7 +116,7 @@ export default function ProgramsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-primary text-sm font-medium mb-6">
                 <Icon icon="solar:global-bold" />
                 Global Communication
               </div>
@@ -138,7 +142,7 @@ export default function ProgramsSection() {
                   >
                     <Icon
                       icon="solar:check-circle-bold"
-                      className="text-blue-600 text-xl"
+                      className="text-primary text-xl"
                     />
                     {item}
                   </li>
