@@ -1,61 +1,31 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import { ListGrid } from "@/components/ui/ListGrid";
 import { Chip } from "@heroui/react";
-import { ACTION_BUTTONS, ADD_BUTTON } from "@/components/ui/Button/ActionButtons";
-
-// Temporary mock data - replace with actual API call
-const useMockClasses = () => {
-  return {
-    data: {
-      data: [
-        {
-          id: "1",
-          name: "Mathematics 101",
-          code: "MATH101",
-          description: "Introduction to Mathematics",
-          isActive: true,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          name: "English Literature",
-          code: "ENG201",
-          description: "Advanced English Literature",
-          isActive: true,
-          createdAt: new Date().toISOString(),
-        },
-      ],
-      totalCount: 2,
-    },
-    isLoading: false,
-    isError: false,
-    error: null,
-  };
-};
+import {
+  ACTION_BUTTONS,
+  ADD_BUTTON,
+} from "@/components/ui/Button/ActionButtons";
+import { useClasses } from "@/services/classesService";
+import { ClassItem } from "@/features/classes/interfaces";
 
 export default function ClassList() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
-
   const {
     data: dataClasses,
     isLoading,
     isError,
     error,
-  } = useMockClasses();
-
-  const totalCount = dataClasses?.totalCount || 0;
+  } = useClasses();
+  const queryError = error instanceof Error ? error : undefined;
 
   const columns = [
     {
       key: "code",
       label: "Code",
-      value: (classItem: any) => (
+      value: (classItem: ClassItem) => (
         <div className="font-mono font-semibold text-primary">
           {classItem.code}
         </div>
@@ -64,7 +34,7 @@ export default function ClassList() {
     {
       key: "name",
       label: "Class Name",
-      value: (classItem: any) => (
+      value: (classItem: ClassItem) => (
         <div>
           <div className="font-semibold">{classItem.name}</div>
           <div className="text-xs text-gray-500">
@@ -76,7 +46,7 @@ export default function ClassList() {
     {
       key: "status",
       label: "Status",
-      value: (classItem: any) => (
+      value: (classItem: ClassItem) => (
         <Chip
           size="sm"
           color={classItem.isActive ? "success" : "default"}
@@ -89,7 +59,7 @@ export default function ClassList() {
     {
       key: "createdAt",
       label: "Created At",
-      value: (classItem: any) =>
+      value: (classItem: ClassItem) =>
         new Date(classItem.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "short",
@@ -103,11 +73,6 @@ export default function ClassList() {
     },
   ];
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
   return (
     <ListGrid
       keyField="id"
@@ -117,21 +82,18 @@ export default function ClassList() {
       actionButtons={{
         add: ADD_BUTTON.CREATE("/classes/create"),
         show: ACTION_BUTTONS.SHOW((id) => router.push(`/classes/${id}/enroll`)),
+        edit: ACTION_BUTTONS.EDIT("/classes"),
       }}
       isError={isError}
-      error={error}
+      error={queryError}
       loading={isLoading}
-      empty={dataClasses?.data?.length === 0}
       nameField="name"
       searchPlaceholder="Search classes by name or code..."
       data={dataClasses}
-      onSearch={handleSearch}
+      onSearch={() => {}}
       columns={columns as never}
-      pageSize={pageSize}
-      showPagination={true}
-      totalCount={totalCount}
-      currentPage={currentPage}
-      onPageChange={setCurrentPage}
+      pageSize={10}
+      showPagination
     />
   );
 }
