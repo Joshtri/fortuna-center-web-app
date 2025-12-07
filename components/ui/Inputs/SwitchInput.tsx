@@ -11,6 +11,7 @@ interface SwitchInputProps {
   name: string;
   label?: string;
   description?: string;
+  helperText?: string;
   isRequired?: boolean;
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
@@ -40,6 +41,7 @@ export const SwitchInput = ({
   name,
   label,
   description,
+  helperText,
   isRequired = false,
   disabled = false,
   size = "md",
@@ -59,13 +61,13 @@ export const SwitchInput = ({
   return (
     <FormFieldWrapper
       error={error}
+      helperText={helperText}
       label={label}
       name={name}
       required={isRequired}
     >
       <Controller
         control={control}
-        defaultValue={false}
         name={name}
         render={({ field }) => (
           <Switch
