@@ -5,6 +5,8 @@ import React from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SearchProvider } from "./SearchProvider";
 import { NotificationProvider } from "./NotificationProvider";
+import { ThemeProvider } from "./ThemeProvider";
+import { AudioPlayerProvider } from "./AudioPlayerContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,15 +21,17 @@ const queryClient = new QueryClient({
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <HeroUIProvider>
-      <ToastProvider />
-      <QueryClientProvider client={queryClient}>
-        <NotificationProvider>
-          <SearchProvider>
-            {children}
-          </SearchProvider>
-        </NotificationProvider>
-      </QueryClientProvider>
-    </HeroUIProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <HeroUIProvider>
+        <ToastProvider />
+        <QueryClientProvider client={queryClient}>
+          <NotificationProvider>
+            <SearchProvider>
+              <AudioPlayerProvider>{children}</AudioPlayerProvider>
+            </SearchProvider>
+          </NotificationProvider>
+        </QueryClientProvider>
+      </HeroUIProvider>
+    </ThemeProvider>
   );
 }
