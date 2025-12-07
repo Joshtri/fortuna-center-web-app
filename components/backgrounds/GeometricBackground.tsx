@@ -9,7 +9,7 @@ export default function GeometricBackground() {
       {/* Circle 1 */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.08, scale: 1 }}
+        whileInView={{ opacity: 0.12, scale: 1 }}
         transition={{ duration: 1.5 }}
         className="absolute top-10 left-10 w-64 h-64 rounded-full bg-primary blur-3xl"
       />
@@ -17,7 +17,7 @@ export default function GeometricBackground() {
       {/* Circle 2 */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.08, scale: 1 }}
+        whileInView={{ opacity: 0.15, scale: 1 }}
         transition={{ duration: 1.5, delay: 0.2 }}
         className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-secondary blur-3xl"
       />
@@ -26,14 +26,14 @@ export default function GeometricBackground() {
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-        className="absolute top-1/4 right-1/4 w-20 h-20 border-2 border-primary/20 rounded-2xl opacity-20"
+        className="absolute top-1/4 right-1/4 w-20 h-20 border-2 border-primary/30 rounded-2xl opacity-30"
       />
 
       {/* Square 2 */}
       <motion.div
         animate={{ rotate: -360 }}
         transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-1/3 left-1/5 w-12 h-12 border-2 border-red-100 rounded-xl opacity-30"
+        className="absolute bottom-1/3 left-1/5 w-12 h-12 border-2 border-secondary/40 rounded-xl opacity-40"
       />
 
       {/* Triangle (SVG) */}
