@@ -1,4 +1,6 @@
-import { pgTable, text, varchar, timestamp, pgEnum, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, pgEnum, uuid } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { id, timestamps } from './columns.helper';
 
 // Role enum
 export const userRoleEnum = pgEnum('user_role', [
@@ -10,16 +12,14 @@ export const userRoleEnum = pgEnum('user_role', [
 
 // Users table
 export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  ...id,
   email: varchar('email', { length: 255 }).notNull().unique(),
   name: text('name').notNull(),
   role: userRoleEnum('role').notNull(),
-  clerkId: uuid('clerk_id').notNull().unique(),
+  clerkId: varchar('clerk_id', {length: 255}).notNull().unique(),
   image: varchar("image", { length: 500 }),
-
   password: text('password'), // hashed password
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 // Type exports
