@@ -36,12 +36,12 @@ export default function ScrollToTopButton() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.5 }}
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full border-2 border-secondary text-secondary bg-white/80 backdrop-blur-sm shadow-lg shadow-secondary/20 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 hover:scale-110 group"
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full border-2 border-secondary text-secondary  backdrop-blur-sm shadow-lg shadow-secondary/20 flex items-center justify-center bg-secondary hover:text-secondary-foreground transition-all duration-300 hover:scale-110 group outline-md outline-black/20"
           aria-label="Scroll to top"
         >
           <Icon
             icon="ion:arrow-up"
-            className="text-2xl group-hover:-translate-y-1 transition-transform"
+            className="text-2xl text-black group-hover:-translate-y-1 transition-transform"
           />
         </motion.button>
       )}
