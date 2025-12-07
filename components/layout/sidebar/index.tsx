@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
@@ -11,8 +11,9 @@ import Image from "next/image";
 
 interface NavigationItem {
   name: string;
-  href: string;
+  href?: string;
   icon: React.ComponentType<{ className?: string }>;
+  children?: NavigationItem[];
 }
 
 interface SidebarProps {
@@ -34,11 +35,169 @@ export function Sidebar({
   isDark,
   navigationItems,
   title = "Dashboard",
-  logoLight = "/joshtri-lenggu-outlined.png",
-  logoDark = "/joshtri-lenggu-solid.png",
+  logoLight = "/apple-touch-icon.png",
+  logoDark = "/apple-touch-icon.png",
   homeHref = "/dashboard",
 }: SidebarProps) {
   const pathname = usePathname();
+  const isPathActive = (href?: string) => {
+    if (!href) return false;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  const doesItemContainActivePath = (item: NavigationItem): boolean => {
+    if (isPathActive(item.href)) return true;
+    return (
+      item.children?.some((child) => doesItemContainActivePath(child)) || false
+    );
+  };
+
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    navigationItems.forEach((item) => {
+      if (item.children?.length && doesItemContainActivePath(item)) {
+        initial[item.name] = true;
+      }
+    });
+    return initial;
+  });
+
+  useEffect(() => {
+    setOpenGroups((prev) => {
+      const next = { ...prev };
+      navigationItems.forEach((item) => {
+        if (item.children?.length && doesItemContainActivePath(item)) {
+          next[item.name] = true;
+        }
+      });
+      return next;
+    });
+  }, [pathname, navigationItems]);
+
+  const toggleGroup = (name: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  const renderNavigationItems = (items: NavigationItem[], depth = 0) =>
+    items.map((item) => {
+      const hasChildren = !!item.children?.length;
+      const ItemIcon = item.icon;
+      const activeSelf = isPathActive(item.href);
+      const activeChild =
+        hasChildren &&
+        item.children?.some((child) => doesItemContainActivePath(child));
+      const isOpen = hasChildren
+        ? openGroups[item.name] ?? activeChild ?? false
+        : false;
+      const depthPaddingClass = !sidebarCollapsed && depth > 0 ? "pl-6" : "";
+
+      if (hasChildren) {
+        const groupContent = (
+          <button
+            key={item.name}
+            type="button"
+            onClick={() => toggleGroup(item.name)}
+            className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
+              sidebarCollapsed ? "justify-center" : ""
+            } ${depthPaddingClass} ${
+              activeSelf || activeChild
+                ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400"
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <ItemIcon className="w-5 h-5 shrink-0" />
+              {!sidebarCollapsed && (
+                <span className="whitespace-nowrap">{item.name}</span>
+              )}
+            </div>
+            {!sidebarCollapsed && (
+              <Icon
+                icon={isOpen ? "lucide:chevron-down" : "lucide:chevron-right"}
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
+              />
+            )}
+          </button>
+        );
+
+        return (
+          <div key={item.name} className="space-y-1">
+            {sidebarCollapsed ? (
+              <Tooltip
+                content={item.name}
+                placement="right"
+                delay={0}
+                closeDelay={0}
+                classNames={{
+                  base: "hidden lg:block",
+                  content:
+                    "bg-gray-900 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg",
+                }}
+              >
+                {groupContent}
+              </Tooltip>
+            ) : (
+              groupContent
+            )}
+
+            {isOpen && (
+              <div className={`${sidebarCollapsed ? "" : "pl-4"} space-y-1`}>
+                {renderNavigationItems(item.children!, depth + 1)}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      const isActive = activeSelf;
+
+      const navLink = (
+        <Link
+          href={item.href || "#"}
+          onClick={() => setSidebarOpen(false)}
+          className={`
+              flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+              transition-colors duration-150 relative group
+              ${sidebarCollapsed ? "justify-center" : ""}
+              ${depthPaddingClass}
+              ${
+                isActive
+                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+              }
+            `}
+        >
+          <ItemIcon className="w-5 h-5 shrink-0" />
+          {!sidebarCollapsed && (
+            <span className="whitespace-nowrap">{item.name}</span>
+          )}
+        </Link>
+      );
+
+      if (sidebarCollapsed) {
+        return (
+          <Tooltip
+            key={item.name}
+            content={item.name}
+            placement="right"
+            delay={0}
+            closeDelay={0}
+            classNames={{
+              base: "hidden lg:block",
+              content:
+                "bg-gray-900 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg",
+            }}
+          >
+            {navLink}
+          </Tooltip>
+        );
+      }
+
+      return <React.Fragment key={item.name}>{navLink}</React.Fragment>;
+    });
 
   return (
     <>
@@ -56,10 +215,10 @@ export function Sidebar({
           fixed top-0 left-0 z-50 h-screen bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800
           transform transition-all duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          ${sidebarCollapsed ? "lg:w-20" : "lg:w-64"}
+          ${sidebarCollapsed ? "lg:w-20" : "lg:w-72"}
           lg:translate-x-0 flex flex-col
         `}
-        style={{ width: sidebarCollapsed ? "80px" : "256px" }}
+        style={{ width: sidebarCollapsed ? "80px" : "268px" }}
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
@@ -107,54 +266,7 @@ export function Sidebar({
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          {navigationItems.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(item.href + "/");
-            const Icon = item.icon;
-
-            const navLink = (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setSidebarOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-                  transition-colors duration-150 relative group
-                  ${sidebarCollapsed ? "justify-center" : ""}
-                  ${
-                    isActive
-                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
-                  }
-                `}
-              >
-                <Icon className="w-5 h-5 shrink-0" />
-                {!sidebarCollapsed && (
-                  <span className="whitespace-nowrap">{item.name}</span>
-                )}
-              </Link>
-            );
-
-            // Show tooltip only when collapsed on desktop
-            return sidebarCollapsed ? (
-              <Tooltip
-                key={item.name}
-                content={item.name}
-                placement="right"
-                delay={0}
-                closeDelay={0}
-                classNames={{
-                  base: "hidden lg:block",
-                  content:
-                    "bg-gray-900 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg",
-                }}
-              >
-                {navLink}
-              </Tooltip>
-            ) : (
-              navLink
-            );
-          })}
+          {renderNavigationItems(navigationItems)}
         </nav>
 
         {/* Sidebar Footer */}
@@ -224,7 +336,9 @@ export function Sidebar({
                 className="w-full flex items-center justify-center gap-3 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
                 color="danger"
                 variant="flat"
-                startContent={<Icon icon="lucide:log-out" className="w-5 h-5" />}
+                startContent={
+                  <Icon icon="lucide:log-out" className="w-5 h-5" />
+                }
               >
                 Log Out
               </Button>
