@@ -1,4 +1,5 @@
-import { pgTable, text, varchar, timestamp, boolean, pgEnum, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, pgEnum } from 'drizzle-orm/pg-core';
+import { id, timestamps } from './columns.helper';
 
 // Enums
 export const sessionStatusEnum = pgEnum('session_status', ['pending', 'live', 'ended', 'error']);
@@ -6,7 +7,7 @@ export const inputTypeEnum = pgEnum('input_type', ['browser', 'rtmp', 'audio', '
 export const youtubePrivacyEnum = pgEnum('youtube_privacy', ['public', 'private', 'unlisted']);
 
 export const liveSessions = pgTable('live_sessions', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  ...id,
   title: text('title').notNull(),
   description: text('description'),
   status: sessionStatusEnum('status').default('pending').notNull(),
@@ -37,8 +38,7 @@ export const liveSessions = pgTable('live_sessions', {
   scheduledAt: timestamp('scheduled_at'),
   startedAt: timestamp('started_at'),
   endedAt: timestamp('ended_at'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  ...timestamps,
 });
 
 export type LiveSession = typeof liveSessions.$inferSelect;
