@@ -1,7 +1,8 @@
-import { Input } from "@heroui/react";
-import { useFormContext, RegisterOptions, Controller } from "react-hook-form";
-import { useState, MouseEvent } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Input, type InputProps } from "@heroui/react";
+import { useFormContext, type RegisterOptions, Controller } from "react-hook-form";
+import { useState, MouseEvent, ReactNode } from "react";
+// import { Eye, EyeOff } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 import { FormFieldWrapper } from "../Form/FormFieldWrapper";
 
@@ -15,6 +16,12 @@ interface TextInputProps {
   errorMessage?: string;
   type?: "text" | "password" | "email" | "number" | "tel" | "url";
   validation?: RegisterOptions;
+  helperText?: string;
+  description?: string;
+  startContent?: ReactNode;
+  endContent?: ReactNode;
+  classNames?: InputProps["classNames"];
+  labelPlacement?: InputProps["labelPlacement"];
 }
 
 export const TextInput = ({
@@ -27,9 +34,14 @@ export const TextInput = ({
   isInvalid = false,
   errorMessage,
   validation,
+  helperText,
+  description,
+  startContent,
+  endContent,
+  classNames,
+  labelPlacement = "outside",
 }: TextInputProps) => {
   const {
-    register,
     control,
     formState: { errors },
   } = useFormContext();
@@ -47,46 +59,72 @@ export const TextInput = ({
     setShow(prev => !prev);
   };
 
+  const mergeClassNames = (base: string, extra?: string) =>
+    [base, extra].filter(Boolean).join(" ").trim();
+
+  const mergedClassNames: InputProps["classNames"] = {
+    input: mergeClassNames("dark:text-white", classNames?.input),
+    inputWrapper: mergeClassNames(
+      "dark:bg-gray-800 dark:border-gray-700",
+      classNames?.inputWrapper
+    ),
+    label: mergeClassNames("dark:text-gray-300", classNames?.label),
+    description: mergeClassNames("dark:text-gray-400", classNames?.description),
+    helperWrapper: classNames?.helperWrapper,
+    innerWrapper: classNames?.innerWrapper,
+    mainWrapper: classNames?.mainWrapper,
+  };
+
+  const renderPasswordToggle = () =>
+    isPassword ? (
+      <button
+        aria-label={show ? "Sembunyikan password" : "Tampilkan password"}
+        className="inline-flex items-center justify-center p-1 text-gray-600 dark:text-gray-400"
+        type="button"
+        onClick={toggleShow}
+      >
+        {show ? <Icon icon="lucide:eye-off" className="w-4 h-4" /> : <Icon icon="lucide:eye" className="w-4 h-4" />}
+      </button>
+    ) : null;
+
+  const combinedEndContent = isPassword ? (
+    <div className="flex items-center gap-1">
+      {endContent}
+      {renderPasswordToggle()}
+    </div>
+  ) : (
+    endContent
+  );
+
   return (
-    <FormFieldWrapper label={label} name={name} required={required}>
+    <FormFieldWrapper
+      helperText={helperText}
+      label={label}
+      name={name}
+      required={required}
+    >
       <Controller
         control={control}
         name={name}
         render={({ field }) => (
           <Input
-            {...field}
-            classNames={{
-              input: "dark:text-white",
-              inputWrapper: "dark:bg-gray-800 dark:border-gray-700",
-              label: "dark:text-gray-300",
-              description: "dark:text-gray-400",
-            }}
-            endContent={
-              isPassword ? (
-                <button
-                  aria-label={
-                    show ? "Sembunyikan password" : "Tampilkan password"
-                  }
-                  className="inline-flex items-center justify-center p-1 text-gray-600 dark:text-gray-400"
-                  type="button"
-                  onClick={toggleShow}
-                >
-                  {show ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              ) : undefined
-            }
+            classNames={mergedClassNames}
+            description={description}
+            endContent={combinedEndContent}
             errorMessage={error}
             id={name}
             isDisabled={disabled}
             isInvalid={!!error || isInvalid}
             isRequired={required}
-            labelPlacement="outside"
+            labelPlacement={labelPlacement}
+            name={field.name}
             placeholder={placeholder}
+            startContent={startContent}
             type={isPassword && show ? "text" : type}
+            value={field.value ?? ""}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            ref={field.ref}
           />
         )}
         rules={validation}
