@@ -15,6 +15,20 @@ const config = {
                 mono: ["var(--font-mono)"],
             },
             colors: {
+                // Semantic colors - auto dark mode!
+                border: "rgb(var(--border))",
+                input: "rgb(var(--input))",
+                background: "rgb(var(--background))",
+                foreground: "rgb(var(--foreground))",
+                card: {
+                    DEFAULT: "rgb(var(--card))",
+                    foreground: "rgb(var(--card-foreground))",
+                },
+                muted: {
+                    DEFAULT: "rgb(var(--muted))",
+                    foreground: "rgb(var(--muted-foreground))",
+                },
+                // Brand colors (tetap static)
                 primary: {
                     DEFAULT: "#D32F2F", // Red 700
                     foreground: "#ffffff",
