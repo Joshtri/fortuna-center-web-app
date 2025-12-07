@@ -1,62 +1,61 @@
-/**
- * YouTube OAuth - Callback Handler
- * GET /api/auth/youtube/callback
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { exchangeCodeForTokens } from '@/lib/youtube/client';
+import { db } from "@/db";
+import { systemSettings } from "@/db/schema/settings.schema";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    const state = searchParams.get('state');
     const error = searchParams.get('error');
 
     // Handle OAuth error
     if (error) {
       console.error('YouTube OAuth Error:', error);
       return NextResponse.redirect(
-        new URL(`/dashboard?error=${error}`, request.url)
+        new URL(`/admin/dashboard?error=${error}`, request.url)
       );
     }
 
     // Validate auth code
     if (!code) {
       return NextResponse.redirect(
-        new URL('/dashboard?error=no_code', request.url)
+        new URL('/admin/dashboard?error=no_code', request.url)
       );
     }
 
     // Exchange code for tokens
     const tokens = await exchangeCodeForTokens(code);
 
-    // TODO: Store tokens securely
-    // Options:
-    // 1. Store in database associated with user
-    // 2. Store in encrypted session
-    // 3. Store in secure cookie
-
-    // For now, we'll redirect with success
-    // In production, you should:
-    // - Save tokens to database
-    // - Associate with current user
-    // - Encrypt refresh token
+    // Store tokens in DB
+    await db
+      .insert(systemSettings)
+      .values({
+        key: "youtube_tokens",
+        value: JSON.stringify(tokens),
+        description: "YouTube OAuth tokens including access and refresh tokens",
+      })
+      .onConflictDoUpdate({
+        target: systemSettings.key,
+        set: {
+          value: JSON.stringify(tokens),
+          updatedAt: new Date(),
+        },
+      });
 
     console.log('YouTube OAuth Success:', {
-      accessToken: tokens.access_token?.substring(0, 10) + '...',
       hasRefreshToken: !!tokens.refresh_token,
       expiresIn: tokens.expiry_date,
     });
 
     // Redirect to dashboard with success message
     return NextResponse.redirect(
-      new URL('/dashboard?youtube_auth=success', request.url)
+      new URL('/admin/dashboard?youtube_connected=true', request.url)
     );
   } catch (error: any) {
     console.error('YouTube OAuth Callback Error:', error);
     return NextResponse.redirect(
-      new URL(`/dashboard?error=${error.message}`, request.url)
+      new URL(`/admin/dashboard?error=${error.message}`, request.url)
     );
   }
 }
