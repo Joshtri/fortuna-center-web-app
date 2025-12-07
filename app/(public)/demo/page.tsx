@@ -1,18 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Card,
-  CardBody,
-  Button,
-  Input,
-  Avatar,
-  Chip,
-  Tabs,
-  Tab,
-} from "@heroui/react";
+import { Card, Button, Input, Avatar, Tabs, Tab } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ShareButton } from "@/components/ui/ShareButton";
+import { formatDistanceToNow } from "date-fns";
 
 interface ChatMessage {
   id: string;
@@ -24,39 +17,109 @@ interface ChatMessage {
 
 export default function DemoPage() {
   const [activeTab, setActiveTab] = useState<"video" | "audio">("video");
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-12 transition-colors">
+      {/* Tabs Navigation - Stick to top or just below header */}
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4">
+          <Tabs
+            selectedKey={activeTab}
+            onSelectionChange={(key) => setActiveTab(key as "video" | "audio")}
+            size="lg"
+            variant="underlined"
+            classNames={{
+              tabList: "gap-6 w-full relative rounded-none p-0",
+              cursor: "w-full bg-red-600",
+              tab: "max-w-fit px-4 h-14",
+              tabContent:
+                "group-data-[selected=true]:text-red-600 text-gray-500 font-medium",
+            }}
+          >
+            <Tab
+              key="video"
+              title={
+                <div className="flex items-center gap-2">
+                  <Icon icon="logos:youtube-icon" className="text-xl" />
+                  <span>Video Stream</span>
+                </div>
+              }
+            />
+            <Tab
+              key="audio"
+              title={
+                <div className="flex items-center gap-2">
+                  <Icon
+                    icon="solar:radio-minimalistic-bold"
+                    className="text-xl text-blue-500"
+                  />
+                  <span>Audio Stream</span>
+                </div>
+              }
+            />
+          </Tabs>
+        </div>
+      </div>
+
+      <div className="pt-6">
+        <AnimatePresence mode="wait">
+          {activeTab === "video" ? (
+            <motion.div
+              key="video"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <YouTubeDemo />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="audio"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <AudioDemo />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// YOUTUBE STYLE UI
+// ==========================================
+
+function YouTubeDemo() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
       user: "Sarah Johnson",
-      message: "Great lesson today! 👍",
+      message: "This English lesson is amazing! 👏",
       avatar: "https://i.pravatar.cc/150?img=1",
       timestamp: new Date(Date.now() - 300000),
     },
     {
       id: "2",
       user: "Mike Chen",
-      message: "Can you explain the grammar part again?",
+      message: "The grammar explanation was very clear.",
       avatar: "https://i.pravatar.cc/150?img=2",
       timestamp: new Date(Date.now() - 240000),
     },
     {
       id: "3",
       user: "Emma Davis",
-      message: "This is so helpful! Thank you! 🙏",
+      message: "Hello everyone from London! 🇬🇧",
       avatar: "https://i.pravatar.cc/150?img=3",
       timestamp: new Date(Date.now() - 180000),
     },
   ]);
   const [newMessage, setNewMessage] = useState("");
-  const [viewerCount, setViewerCount] = useState(234);
   const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setViewerCount((prev) => prev + Math.floor(Math.random() * 10) - 4);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,259 +140,286 @@ export default function DemoPage() {
     setNewMessage("");
   };
 
-  const shareToSocial = (platform: string) => {
-    const url = window.location.href;
-    const text =
-      activeTab === "video"
-        ? "Join me watching Fortuna Center English Learning Live!"
-        : "🎙️ Listening to Fortuna Center English Podcast Live!";
-
-    const urls: Record<string, string> = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        url
-      )}`,
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
-      telegram: `https://t.me/share/url?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-    };
-
-    window.open(urls[platform], "_blank", "width=600,height=400");
-  };
+  const relatedVideos = [
+    {
+      title: "Advanced English Conversation",
+      views: "12K views",
+      time: "2 days ago",
+      img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=300&h=170",
+    },
+    {
+      title: "Common Grammar Mistakes",
+      views: "8.5K views",
+      time: "5 days ago",
+      img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=300&h=170",
+    },
+    {
+      title: "IELTS Speaking Tips 2024",
+      views: "45K views",
+      time: "1 week ago",
+      img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=300&h=170",
+    },
+    {
+      title: "Learn English with Movies",
+      views: "120K views",
+      time: "2 weeks ago",
+      img: "https://images.unsplash.com/photo-1489599849909-5241975b9863?auto=format&fit=crop&q=80&w=300&h=170",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-8 pb-12">
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Tabs */}
-        <div className="mb-8">
-          <Tabs
-            selectedKey={activeTab}
-            onSelectionChange={(key) => setActiveTab(key as "video" | "audio")}
-            size="lg"
-            variant="underlined"
-            classNames={{
-              tabList:
-                "gap-6 w-full relative rounded-none p-0 border-b border-gray-200",
-              cursor: "w-full bg-blue-600",
-              tab: "max-w-fit px-0 h-12",
-              tabContent:
-                "group-data-[selected=true]:text-blue-600 text-gray-500 font-medium",
-            }}
-          >
-            <Tab
-              key="video"
-              title={
-                <div className="flex items-center gap-2">
-                  <Icon
-                    icon="solar:videocamera-record-bold"
-                    className="text-xl"
-                  />
-                  <span>Video Broadcast</span>
-                </div>
-              }
+    <div className="max-w-[1800px] mx-auto px-4 lg:px-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Main Content Column */}
+        <div className="lg:col-span-2 xl:col-span-3">
+          {/* Video Player */}
+          <div className="aspect-video w-full bg-black rounded-xl overflow-hidden shadow-lg mb-4">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
             />
-            <Tab
-              key="audio"
-              title={
-                <div className="flex items-center gap-2">
-                  <Icon
-                    icon="solar:radio-minimalistic-bold"
-                    className="text-xl"
-                  />
-                  <span>Audio Broadcast</span>
-                </div>
-              }
-            />
-          </Tabs>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Player */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="bg-black border-0 shadow-2xl shadow-blue-900/10 rounded-2xl overflow-hidden relative group">
-              <CardBody className="p-0">
-                {activeTab === "video" ? <VideoPlayer /> : <AudioPlayer />}
-
-                {/* Viewer Count Overlay */}
-                <div className="absolute top-6 right-6 flex items-center gap-3 z-20">
-                  <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-white text-sm font-medium">
-                    <Icon icon="solar:eye-bold" className="text-blue-400" />
-                    <span>{viewerCount.toLocaleString()}</span>
-                  </div>
-                  <div className="px-3 py-1.5 bg-red-600 text-white rounded-full text-sm font-bold flex items-center gap-2 shadow-lg animate-pulse">
-                    <span className="w-2 h-2 bg-white rounded-full" />
-                    LIVE
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Stream Info */}
-            <Card className="bg-white border border-gray-100 shadow-sm rounded-2xl">
-              <CardBody className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      {activeTab === "video"
-                        ? "English Grammar Masterclass - Present Perfect Tense"
-                        : "🎙️ Daily English Conversation - Episode 47"}
-                    </h2>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                      {activeTab === "video"
-                        ? "Learn how to use present perfect tense correctly with practical examples and exercises. Perfect for intermediate to advanced learners!"
-                        : 'Today\'s topic: "Business English - How to conduct professional meetings in English". Join us for practical phrases and real-world examples!'}
-                    </p>
-                    <div className="flex items-center gap-6 text-sm text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <Icon
-                          icon="solar:clock-circle-bold"
-                          className="text-blue-600"
-                        />
-                        <span>
-                          {activeTab === "video"
-                            ? "Started 45 minutes ago"
-                            : "Live for 32 minutes"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Icon
-                          icon="solar:user-bold"
-                          className="text-blue-600"
-                        />
-                        <span>
-                          Teacher:{" "}
-                          {activeTab === "video"
-                            ? "Ms. Anderson"
-                            : "James Parker"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Share Buttons */}
-                <div className="flex items-center gap-3 pt-6 border-t border-gray-100">
-                  <span className="text-sm font-medium text-gray-500 mr-2">
-                    Share:
-                  </span>
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    className="bg-blue-50 text-blue-600 hover:bg-blue-100"
-                    startContent={<Icon icon="logos:facebook" />}
-                    onPress={() => shareToSocial("facebook")}
-                  >
-                    Facebook
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    className="bg-sky-50 text-sky-600 hover:bg-sky-100"
-                    startContent={<Icon icon="logos:twitter" />}
-                    onPress={() => shareToSocial("twitter")}
-                  >
-                    Twitter
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    className="bg-green-50 text-green-600 hover:bg-green-100"
-                    startContent={<Icon icon="logos:whatsapp-icon" />}
-                    onPress={() => shareToSocial("whatsapp")}
-                  >
-                    WhatsApp
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
           </div>
 
-          {/* Live Chat */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white border border-gray-100 shadow-sm h-[calc(100vh-140px)] flex flex-col rounded-2xl sticky top-24">
-              <CardBody className="p-0 flex flex-col h-full">
-                <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                  <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                    <Icon
-                      icon="solar:chat-round-dots-bold"
-                      className="text-blue-600"
-                    />
-                    Live Chat
+          {/* Video Info */}
+          <div className="space-y-4">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+              🔴 Live English Masterclass: Advanced Grammar & Speaking
+            </h1>
+
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center gap-4">
+                <Avatar
+                  src="https://i.pravatar.cc/150?img=32"
+                  size="md"
+                  className="ring-2 ring-gray-100"
+                />
+                <div>
+                  <h3 className="font-bold text-gray-900 dark:text-white">
+                    Fortuna Center
                   </h3>
+                  <p className="text-sm text-gray-500">12.5K subscribers</p>
                 </div>
+                <Button className="bg-black text-white dark:bg-white dark:text-black rounded-full font-medium ml-2 px-6">
+                  Subscribe
+                </Button>
+              </div>
 
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-                  <AnimatePresence>
-                    {messages.map((msg) => (
-                      <motion.div
-                        key={msg.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="flex gap-3 group"
-                      >
-                        <Avatar
-                          src={msg.avatar}
-                          size="sm"
-                          className="shrink-0 ring-2 ring-gray-100"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2 mb-1">
-                            <span className="font-semibold text-gray-900 text-sm">
-                              {msg.user}
-                            </span>
-                            <span className="text-xs text-gray-400">
-                              {msg.timestamp.toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                          </div>
-                          <div className="bg-gray-50 rounded-2xl rounded-tl-none px-4 py-2 inline-block max-w-full">
-                            <p className="text-gray-700 text-sm break-words">
-                              {msg.message}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                  <div ref={chatEndRef} />
+              <div className="flex items-center gap-2">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <Button
+                    variant="light"
+                    className="rounded-none px-4 gap-2 border-r border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    startContent={
+                      <Icon icon="solar:like-bold" className="text-xl" />
+                    }
+                  >
+                    1.2K
+                  </Button>
+                  <Button
+                    variant="light"
+                    className="rounded-none px-4 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    startContent={
+                      <Icon icon="solar:dislike-bold" className="text-xl" />
+                    }
+                  />
                 </div>
+                <ShareButton
+                  url="https://fortunacenter.com/demo"
+                  title="Live English Masterclass"
+                  className="bg-gray-100 dark:bg-gray-800 rounded-full font-medium px-4 text-gray-700 dark:text-gray-200"
+                  variant="flat"
+                />
+              </div>
+            </div>
 
-                {/* Input */}
-                <div className="p-4 border-t border-gray-100 bg-white">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Type a message..."
-                      value={newMessage}
-                      onValueChange={setNewMessage}
-                      onKeyPress={(e) =>
-                        e.key === "Enter" && handleSendMessage()
-                      }
-                      classNames={{
-                        input: "text-gray-900",
-                        inputWrapper:
-                          "bg-gray-50 border-gray-200 hover:bg-gray-100 focus-within:!bg-white shadow-none",
-                      }}
-                      variant="bordered"
-                    />
+            {/* Description */}
+            <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 text-sm">
+              <div className="flex gap-2 font-bold text-gray-900 dark:text-white mb-2">
+                <span>845 watching</span>
+                <span>•</span>
+                <span>Started streaming 45 minutes ago</span>
+              </div>
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+                Welcome to our daily live English lesson! Today we are covering
+                advanced grammar structures and improving your speaking skills.
+                📚 Topics covered: - Present Perfect Continuous - Inversion in
+                English - Idioms for Business Don't forget to like and subscribe
+                for more daily lessons!
+              </p>
+              <Button
+                size="sm"
+                variant="light"
+                className="text-gray-500 font-semibold mt-2 p-0 h-auto"
+              >
+                Show more
+              </Button>
+            </div>
+
+            {/* Comments Section (Simplified) */}
+            <div className="pt-6 hidden lg:block">
+              <h3 className="font-bold text-xl mb-6">128 Comments</h3>
+              <div className="flex gap-4 mb-8">
+                <Avatar
+                  src="https://i.pravatar.cc/150?img=10"
+                  className="w-10 h-10"
+                />
+                <div className="flex-1">
+                  <Input
+                    placeholder="Add a comment..."
+                    variant="underlined"
+                    classNames={{ inputWrapper: "border-b-1" }}
+                  />
+                  <div className="flex justify-end gap-2 mt-2">
+                    <Button size="sm" variant="light">
+                      Cancel
+                    </Button>
                     <Button
-                      isIconOnly
-                      className="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                      onPress={handleSendMessage}
+                      size="sm"
+                      color="primary"
+                      className="bg-blue-600 rounded-full"
                     >
-                      <Icon icon="solar:plain-2-bold" className="text-xl" />
+                      Comment
                     </Button>
                   </div>
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+              {/* Mock comments */}
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-4 mb-6">
+                  <Avatar
+                    src={`https://i.pravatar.cc/150?img=${i + 20}`}
+                    className="w-10 h-10"
+                  />
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-sm">
+                        User {i + 20}
+                      </span>
+                      <span className="text-xs text-gray-500">2 hours ago</span>
+                    </div>
+                    <p className="text-sm text-gray-800 dark:text-gray-200">
+                      Great lesson! Really helped me understand the topic better
+                      based on the clear examples.
+                    </p>
+                    <div className="flex items-center gap-4 mt-2">
+                      <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900">
+                        <Icon icon="solar:like-outline" /> 12
+                      </button>
+                      <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900">
+                        <Icon icon="solar:dislike-outline" />
+                      </button>
+                      <button className="text-xs text-gray-500 hover:text-gray-900 font-semibold">
+                        Reply
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar (Chat & Recommendations) */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Live Chat Component */}
+          <Card className="border border-gray-200 dark:border-gray-800 shadow-none h-[600px] flex flex-col rounded-xl">
+            <div className="p-3 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <h3 className="font-medium text-gray-900 dark:text-white">
+                Top Chat
+              </h3>
+              <Icon icon="solar:menu-dots-bold" className="text-gray-500" />
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white dark:bg-gray-900 scrollbar-hide">
+              <AnimatePresence>
+                {messages.map((msg) => (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex gap-3 items-start"
+                  >
+                    <Avatar
+                      src={msg.avatar}
+                      size="sm"
+                      className="w-6 h-6 shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <span className="font-medium text-gray-500 text-xs mr-2">
+                        {msg.user}
+                      </span>
+                      <span className="text-gray-900 dark:text-gray-200 text-sm break-words">
+                        {msg.message}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs text-gray-500">
+                    Your message as{" "}
+                    <span className="font-bold text-gray-700">You</span>
+                  </span>
+                </div>
+                <div className="relative">
+                  <Input
+                    className="w-full"
+                    placeholder="Chat..."
+                    value={newMessage}
+                    onValueChange={setNewMessage}
+                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    variant="flat"
+                    radius="full"
+                    classNames={{
+                      inputWrapper: "bg-gray-100 dark:bg-gray-800 pr-10",
+                    }}
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                  >
+                    <Icon icon="solar:plain-3-bold" className="text-xl" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Related Videos */}
+          <div className="space-y-4">
+            {relatedVideos.map((video, idx) => (
+              <div key={idx} className="flex gap-2 group cursor-pointer">
+                <div className="relative w-40 h-24 shrink-0 rounded-lg overflow-hidden">
+                  <img
+                    src={video.img}
+                    alt={video.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
+                    12:45
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h4 className="font-semibold text-sm line-clamp-2 text-gray-900 dark:text-white dark:group-hover:text-blue-400 group-hover:text-blue-600 transition-colors">
+                    {video.title}
+                  </h4>
+                  <p className="text-xs text-gray-500">Fortuna Center</p>
+                  <p className="text-xs text-gray-500">
+                    {video.views} • {video.time}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -337,286 +427,245 @@ export default function DemoPage() {
   );
 }
 
-// Video Player Component
-function VideoPlayer() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
+// ==========================================
+// AZURACAST STYLE UI (Replicated)
+// ==========================================
 
-  const slides = [
-    { title: "Present Perfect Tense", subtitle: "Usage & Examples" },
-    { title: "Have / Has + Past Participle", subtitle: "Structure" },
-    { title: "Time Expressions", subtitle: "already, yet, just, ever, never" },
-  ];
+// Mock data to match Azuracast interface
+const mockStation = {
+  name: "Fortuna Broadcast Center (Demo)",
+  description:
+    "Streaming our latest shows, music, and student-led programming 24/7.",
+};
 
-  useEffect(() => {
-    const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 8000);
-    return () => clearInterval(slideInterval);
-  }, [slides.length]);
+const mockNowPlaying = {
+  live: {
+    is_live: true,
+    streamer_name: "Live Studio Broadcast",
+  },
+  now_playing: {
+    song: {
+      title: "English Learning Podcast",
+      artist: "Fortuna Education",
+    },
+    played_at: Math.floor(Date.now() / 1000) - 300, // 5 mins ago
+  },
+  listeners: {
+    current: 125,
+    total: 1542,
+  },
+  song_history: [
+    {
+      song: { title: "Morning Grammar Drill", artist: "Ms. Sarah" },
+      played_at: Math.floor(Date.now() / 1000) - 600,
+    },
+    {
+      song: { title: "Vocabulary Session 101", artist: "Mr. James" },
+      played_at: Math.floor(Date.now() / 1000) - 1200,
+    },
+    {
+      song: { title: "Student Stories: My Journey", artist: "Student Council" },
+      played_at: Math.floor(Date.now() / 1000) - 2400,
+    },
+  ],
+};
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+const mockStreams = [
+  {
+    id: 1,
+    name: "High Quality Stream",
+    is_default: true,
+    format: "mp3",
+    bitrate: 128,
+    listeners: { current: 125, total: 200 },
+    url: "#",
+  },
+  {
+    id: 2,
+    name: "Mobile Low Bandwidth",
+    is_default: false,
+    format: "aac",
+    bitrate: 64,
+    listeners: { current: 45, total: 100 },
+    url: "#",
+  },
+];
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationId: number;
-    let particles: Array<{ x: number; y: number; vx: number; vy: number }> = [];
-
-    for (let i = 0; i < 30; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-      });
-    }
-
-    const animate = () => {
-      // Background
-      const gradient = ctx.createLinearGradient(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-      gradient.addColorStop(0, "#1e293b");
-      gradient.addColorStop(1, "#0f172a");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(37, 99, 235, 0.3)"; // Blue particles
-        ctx.fill();
-      });
-
-      // Teacher video box
-      const teacherW = canvas.width * 0.25;
-      const teacherH = canvas.height * 0.35;
-      const teacherX = 40;
-      const teacherY = 40;
-
-      // Box shadow/border for teacher
-      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-      ctx.shadowBlur = 20;
-      ctx.fillStyle = "#1e293b";
-      ctx.fillRect(teacherX, teacherY, teacherW, teacherH);
-      ctx.shadowBlur = 0;
-
-      // Teacher content
-      ctx.font = "bold 64px Arial";
-      ctx.fillStyle = "#3b82f6"; // Blue
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("👩‍🏫", teacherX + teacherW / 2, teacherY + teacherH / 2 - 20);
-
-      ctx.font = "bold 20px Inter, Arial";
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText(
-        "Ms. Anderson",
-        teacherX + teacherW / 2,
-        teacherY + teacherH - 40
-      );
-
-      // Presentation slide
-      const slideX = 40;
-      const slideY = teacherY + teacherH + 40;
-      const slideW = canvas.width - 80;
-      const slideH = canvas.height - slideY - 40;
-
-      // Slide background
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(slideX, slideY, slideW, slideH);
-
-      const slide = slides[currentSlide];
-
-      // Slide content
-      ctx.font = "bold 56px Inter, Arial";
-      ctx.fillStyle = "#1e293b";
-      ctx.fillText(slide.title, slideX + slideW / 2, slideY + 100);
-
-      ctx.font = "36px Inter, Arial";
-      ctx.fillStyle = "#64748b";
-      ctx.fillText(slide.subtitle, slideX + slideW / 2, slideY + 180);
-
-      // Example box
-      ctx.fillStyle = "#eff6ff"; // Light blue
-      ctx.fillRect(slideX + 80, slideY + 240, slideW - 160, 140);
-      ctx.strokeStyle = "#bfdbfe";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(slideX + 80, slideY + 240, slideW - 160, 140);
-
-      ctx.font = "bold 28px Inter, Arial";
-      ctx.fillStyle = "#2563eb"; // Blue
-      ctx.textAlign = "left";
-      ctx.fillText("Example:", slideX + 120, slideY + 290);
-
-      ctx.font = "24px Inter, Arial";
-      ctx.fillStyle = "#334155";
-      ctx.fillText(
-        "I have studied English for 5 years.",
-        slideX + 120,
-        slideY + 340
-      );
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-    };
-  }, [currentSlide, slides]);
-
-  return (
-    <div className="relative aspect-video bg-slate-900">
-      <canvas
-        ref={canvasRef}
-        width={1280}
-        height={720}
-        className="w-full h-full"
-      />
-
-      <div className="absolute top-6 left-6 px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-white text-xs font-medium border border-white/10">
-        HD 1080p
-      </div>
-
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/20">
-        <Button
-          isIconOnly
-          size="lg"
-          className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full hover:scale-110 transition-transform"
-          onPress={() => setIsPlaying(!isPlaying)}
-        >
-          <Icon
-            icon={isPlaying ? "solar:pause-bold" : "solar:play-bold"}
-            className="text-4xl text-white"
-          />
-        </Button>
-      </div>
-    </div>
+function AudioDemo() {
+  const nowPlayingUpdated = formatDistanceToNow(
+    mockNowPlaying.now_playing.played_at * 1000,
+    { addSuffix: true }
   );
-}
-
-// Audio Player Component
-function AudioPlayer() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [audioLevel, setAudioLevel] = useState(0);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationId: number;
-    let time = 0;
-    const bars = 60;
-
-    const animate = () => {
-      time += 0.1;
-
-      // Dark elegant background
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, "#1e3a8a"); // Dark blue
-      gradient.addColorStop(1, "#0f172a"); // Slate 900
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const barWidth = canvas.width / bars;
-      let maxHeight = 0;
-
-      for (let i = 0; i < bars; i++) {
-        const frequency = Math.sin(time + i * 0.5) * 0.5 + 0.5;
-        const noise = Math.random() * 0.3;
-        const height = (frequency + noise) * canvas.height * 0.6;
-        maxHeight = Math.max(maxHeight, height);
-
-        const x = i * barWidth;
-        const y = canvas.height - height;
-
-        const barGradient = ctx.createLinearGradient(x, y, x, canvas.height);
-        barGradient.addColorStop(0, "#60a5fa"); // Light blue
-        barGradient.addColorStop(1, "#2563eb"); // Blue
-
-        ctx.fillStyle = barGradient;
-        ctx.fillRect(x, y, barWidth - 4, height);
-      }
-
-      setAudioLevel(Math.round((maxHeight / (canvas.height * 0.6)) * 100));
-
-      ctx.font = "bold 72px Arial";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("🎙️", canvas.width / 2, canvas.height / 2 - 50);
-
-      ctx.font = "bold 36px Inter, Arial";
-      ctx.fillText("Fortuna Radio", canvas.width / 2, canvas.height / 2 + 40);
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-    };
-  }, []);
 
   return (
-    <div className="relative">
-      <canvas ref={canvasRef} width={1280} height={600} className="w-full" />
+    <div className="bg-white dark:bg-gray-950 min-h-screen">
+      <section className="bg-gradient-to-b from-red-900 via-red-800 to-yellow-900 dark:from-red-950 dark:via-red-900 dark:to-yellow-950 text-white px-6 py-16">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <div className="space-y-2">
+            <p className="text-sm uppercase tracking-widest text-yellow-200">
+              Fortuna Broadcast Center
+            </p>
+            <h1 className="text-4xl font-semibold">{mockStation.name}</h1>
+            <p className="text-yellow-100 max-w-3xl">
+              {mockStation.description}
+            </p>
+          </div>
 
-      <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md rounded-xl p-4 min-w-[200px] border border-white/10">
-        <div className="flex items-center gap-3 mb-2">
-          <Icon
-            icon="solar:soundwave-bold"
-            className="text-2xl text-blue-400"
-          />
-          <div className="flex-1">
-            <p className="text-xs text-white/60">Audio Level</p>
-            <p className="text-lg font-bold text-white">{audioLevel}%</p>
+          <div className="rounded-2xl bg-white/10 border border-white/20 backdrop-blur p-6 flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex flex-col">
+                <span className="text-sm uppercase text-yellow-200 tracking-wide">
+                  {mockNowPlaying.live.is_live
+                    ? "Live Broadcast"
+                    : "Now Playing"}
+                </span>
+                <h2 className="text-2xl font-semibold">
+                  {mockNowPlaying.live.is_live
+                    ? mockNowPlaying.live.streamer_name
+                    : mockNowPlaying.now_playing.song.title}
+                </h2>
+                <p className="text-yellow-100">
+                  {mockNowPlaying.live.is_live
+                    ? `${mockNowPlaying.now_playing.song.title} - ${mockNowPlaying.now_playing.song.artist}`
+                    : mockNowPlaying.now_playing.song.artist}
+                </p>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-yellow-100">
+                <span className="flex items-center gap-1">
+                  <Icon icon="lucide:users" className="w-4 h-4" />
+                  {mockNowPlaying.listeners.current} listening now
+                </span>
+                <span className="flex items-center gap-1">
+                  <Icon icon="lucide:clock-3" className="w-4 h-4" />
+                  Updated {nowPlayingUpdated}
+                </span>
+                <ShareButton
+                  url="/demo"
+                  title={mockStation.name}
+                  text="Check out this broadcast!"
+                  variant="solid"
+                  size="sm"
+                  className="bg-white/20 text-white hover:bg-white/30"
+                />
+              </div>
+            </div>
+            {/* Fake Audio Player */}
+            <div className="w-full bg-black/20 rounded-lg p-3 flex items-center gap-4">
+              <Button
+                isIconOnly
+                className="rounded-full bg-white text-black hover:scale-105"
+                size="lg"
+              >
+                <Icon icon="solar:play-bold" className="text-xl" />
+              </Button>
+              <div className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div
+                  className="w-0 h-full bg-white animate-[width_2s_ease-in-out_infinite]"
+                  style={{ width: "30%" }}
+                ></div>
+              </div>
+              <div className="text-xs font-mono opacity-80">00:00 / LIVE</div>
+              <div className="flex items-center gap-2">
+                <Icon icon="solar:volume-loud-bold" />
+                <div className="w-20 h-1 bg-white/30 rounded-full">
+                  <div className="w-[70%] h-full bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-blue-500"
-            animate={{ width: `${audioLevel}%` }}
-            transition={{ duration: 0.1 }}
-          />
-        </div>
-      </div>
+      </section>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 bg-black/60 backdrop-blur-md rounded-full px-8 py-4 border border-white/10">
-        <Button
-          isIconOnly
-          size="lg"
-          className="bg-blue-600 text-white rounded-full hover:scale-105 transition-transform"
-          onPress={() => setIsPlaying(!isPlaying)}
-        >
-          <Icon
-            icon={isPlaying ? "solar:pause-bold" : "solar:play-bold"}
-            className="text-2xl"
-          />
-        </Button>
-        <div className="text-white">
-          <p className="text-xs text-blue-200 font-medium">LIVE DURATION</p>
-          <p className="font-bold text-xl font-mono">32:15</p>
+      <section className="px-6 py-16 bg-white dark:bg-gray-950">
+        <div className="max-w-5xl mx-auto grid gap-10 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Recently Played
+            </h2>
+            <div className="rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm divide-y divide-gray-100 dark:divide-gray-800">
+              {mockNowPlaying.song_history.map((entry) => (
+                <div
+                  key={`${entry.played_at}-${entry.song.title}`}
+                  className="flex items-center gap-4 px-4 py-3"
+                >
+                  <div className="flex flex-col flex-1">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {entry.song.title}
+                    </span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {entry.song.artist}
+                    </span>
+                  </div>
+                  <time className="text-xs text-gray-400">
+                    {formatDistanceToNow(entry.played_at * 1000, {
+                      addSuffix: true,
+                    })}
+                  </time>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Stream Details
+            </h2>
+            <div className="rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm divide-y divide-gray-100 dark:divide-gray-800">
+              {mockStreams.map((stream) => (
+                <div key={stream.id} className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {stream.name}{" "}
+                        {stream.is_default && (
+                          <span className="text-xs text-red-600 dark:text-red-400 font-semibold ml-1">
+                            LIVE
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {stream.format.toUpperCase()} • {stream.bitrate}kbps
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="light"
+                      className="text-red-600 dark:text-red-400 hover:text-red-500 font-medium p-0"
+                      endContent={
+                        <Icon
+                          icon="lucide:arrow-up-right"
+                          className="w-4 h-4 ml-1"
+                        />
+                      }
+                    >
+                      Listen
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {stream.listeners.current} listeners (peak{" "}
+                    {stream.listeners.total})
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-xl border border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-800 p-4 space-y-2">
+              <p className="text-sm uppercase tracking-wide text-red-700 dark:text-red-400 font-semibold">
+                HLS STREAM
+              </p>
+              <p className="text-gray-800 dark:text-gray-300 text-sm">
+                Adaptive streaming is available for modern players.
+              </p>
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 text-red-700 dark:text-red-400 font-medium text-sm"
+              >
+                Open HLS Stream <Icon icon="lucide:link" className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
