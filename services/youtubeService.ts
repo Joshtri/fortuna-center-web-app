@@ -143,6 +143,40 @@ export async function getLiveBroadcastById(id: string, accessToken?: string): Pr
         throw error;
     }
 }
+
+/**
+ * Public: Get video details by ID
+ */
+export async function getVideoDetails(videoId: string): Promise<YouTubeVideo | null> {
+    if (!GOOGLE_API_KEY) {
+        return null;
+    }
+
+    try {
+        const response = await youtube.videos.list({
+            key: GOOGLE_API_KEY,
+            part: ["snippet"],
+            id: [videoId],
+        });
+
+        const items = response.data.items;
+        if (items && items.length > 0) {
+            const video = items[0];
+            // Manual cast/adaptation because videos.list returns string ID, search.list returns object ID
+            return {
+                ...video,
+                id: {
+                    kind: "youtube#video",
+                    videoId: typeof video.id === 'string' ? video.id : ""
+                }
+            } as unknown as YouTubeVideo;
+        }
+        return items && items.length > 0 ? (items[0] as unknown as YouTubeVideo) : null;
+    } catch (error) {
+        console.error(`Error fetching video details ${videoId}:`, error);
+        return null;
+    }
+}
 // Public API Data Interfaces
 export interface YouTubeVideo {
     id: {
@@ -258,6 +292,33 @@ export async function getPastBroadcasts(channelId: string): Promise<YouTubeVideo
         return (response.data.items as YouTubeVideo[]) || [];
     } catch (error) {
         console.error("Error fetching past broadcasts:", error);
+        return [];
+    }
+}
+
+/**
+ * Public: Get current live broadcasts (videos) for a channel
+ * Requires GOOGLE_API_KEY in .env
+ */
+export async function getCurrentBroadcasts(channelId: string): Promise<YouTubeVideo[]> {
+    if (!GOOGLE_API_KEY) {
+        return [];
+    }
+
+    try {
+        const response = await youtube.search.list({
+            key: GOOGLE_API_KEY,
+            part: ["snippet"],
+            channelId: channelId,
+            eventType: "live",
+            type: ["video"],
+            order: "date",
+            maxResults: 3,
+        });
+
+        return (response.data.items as YouTubeVideo[]) || [];
+    } catch (error) {
+        console.error("Error fetching current broadcasts:", error);
         return [];
     }
 }

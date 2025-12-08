@@ -7,12 +7,9 @@ import {
   CardBody,
   CardFooter,
   Button,
-  Tabs,
-  Tab,
   Modal,
   ModalContent,
   ModalBody,
-  ModalHeader,
   useDisclosure,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
@@ -22,44 +19,70 @@ import { format } from "date-fns";
 // Props interfaces for the display components
 interface VideoCardProps {
   video: YouTubeVideo;
-  onPlay: (videoId: string) => void;
+  onPlay?: (videoId: string) => void;
+  href?: string;
 }
 
 interface PlaylistCardProps {
   playlist: YouTubePlaylist;
 }
 
-function VideoCard({ video, onPlay }: VideoCardProps) {
+function VideoCard({ video, onPlay, href }: VideoCardProps) {
+  const handlePress = () => {
+    if (href) return; // Allow default Link behavior if wrapped or handled
+    if (onPlay) onPlay(video.id.videoId);
+  };
+
+  const Content = (
+    <>
+      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors z-10" />
+      {video.snippet.thumbnails.medium?.url ? (
+        <img
+          src={video.snippet.thumbnails.medium.url}
+          alt={video.snippet.title}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="w-full h-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+          <Icon icon="lucide:image-off" className="w-10 h-10 text-zinc-400" />
+        </div>
+      )}
+      <div className="absolute inset-0 z-20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-red-600/90 flex items-center justify-center text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg">
+          <Icon icon="lucide:play" className="w-6 h-6 fill-current ml-1" />
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <Card className="w-full h-full border-none shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-zinc-900">
       <CardBody
         className="p-0 relative aspect-video group cursor-pointer"
-        onClick={() => onPlay(video.id.videoId)}
+        onClick={href ? undefined : handlePress}
       >
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors z-10" />
-        {video.snippet.thumbnails.medium?.url ? (
-          <img
-            src={video.snippet.thumbnails.medium.url}
-            alt={video.snippet.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-            <Icon icon="lucide:image-off" className="w-10 h-10 text-zinc-400" />
-          </div>
-        )}
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-red-600/90 flex items-center justify-center text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg">
-            <Icon icon="lucide:play" className="w-6 h-6 fill-current ml-1" />
-          </div>
-        </div>
+        {href ? (
+          <Link
+            href={href}
+            className="absolute inset-0 z-30 flex items-center justify-center"
+          >
+            {/* Transparent overlay for link to work on top of images */}
+          </Link>
+        ) : null}
+        {Content}
       </CardBody>
       <CardFooter className="flex flex-col items-start gap-2 p-4">
         <h3
           className="font-semibold text-lg line-clamp-2 leading-tight text-gray-900 dark:text-gray-100"
           title={video.snippet.title}
         >
-          {video.snippet.title}
+          {href ? (
+            <Link href={href} className="hover:text-red-600 transition-colors">
+              {video.snippet.title}
+            </Link>
+          ) : (
+            video.snippet.title
+          )}
         </h3>
         <div className="flex items-center gap-2 text-xs text-gray-500 w-full">
           <Icon icon="lucide:calendar" className="w-3 h-3" />
@@ -122,6 +145,7 @@ interface YouTubePublicGalleryProps {
   videos: YouTubeVideo[];
   playlists: YouTubePlaylist[];
   liveBroadcasts: YouTubeVideo[];
+  currentBroadcasts?: YouTubeVideo[];
   channelId: string;
   activeTab?: string;
 }
@@ -130,6 +154,7 @@ export default function YouTubePublicGalleryClient({
   videos,
   playlists,
   liveBroadcasts,
+  currentBroadcasts = [],
   channelId,
   activeTab = "all",
 }: YouTubePublicGalleryProps) {
@@ -168,24 +193,47 @@ export default function YouTubePublicGalleryClient({
         );
       case "live":
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <Icon icon="lucide:radio" />
-              <span>Live / Past Broadcasts</span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {liveBroadcasts.map((video) => (
-                <VideoCard
-                  key={video.id.videoId}
-                  video={video}
-                  onPlay={handlePlay}
-                />
-              ))}
-              {liveBroadcasts.length === 0 && (
-                <p className="text-gray-500 col-span-3 text-center py-8">
-                  No past live broadcasts found.
-                </p>
-              )}
+          <div className="space-y-12">
+            {currentBroadcasts.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold flex items-center gap-2 text-red-600">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                  <span>Currently Live</span>
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {currentBroadcasts.map((video) => (
+                    <VideoCard
+                      key={video.id.videoId}
+                      video={video}
+                      href={`/video-gallery/live/${video.id.videoId}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Icon icon="lucide:history" />
+                <span>Past Broadcasts</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {liveBroadcasts.map((video) => (
+                  <VideoCard
+                    key={video.id.videoId}
+                    video={video}
+                    onPlay={handlePlay}
+                  />
+                ))}
+                {liveBroadcasts.length === 0 && (
+                  <p className="text-gray-500 col-span-3 text-center py-8">
+                    No past live broadcasts found.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         );

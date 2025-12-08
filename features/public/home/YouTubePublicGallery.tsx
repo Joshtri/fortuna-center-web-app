@@ -3,6 +3,7 @@ import {
   getPastBroadcasts,
   getChannelPlaylists,
   getChannelVideos,
+  getCurrentBroadcasts,
 } from "@/services/youtubeService";
 import YouTubePublicGalleryClient from "./YouTubePublicGalleryClient";
 
@@ -28,17 +29,20 @@ export default async function YouTubePublicGallery({
     );
   }
 
-  const [videos, playlists, liveBroadcasts] = await Promise.all([
-    getChannelVideos(channelId),
-    getChannelPlaylists(channelId),
-    getPastBroadcasts(channelId),
-  ]);
+  const [videos, playlists, liveBroadcasts, currentBroadcasts] =
+    await Promise.all([
+      getChannelVideos(channelId),
+      getChannelPlaylists(channelId),
+      getPastBroadcasts(channelId),
+      getCurrentBroadcasts(channelId),
+    ]);
 
   return (
     <YouTubePublicGalleryClient
       videos={videos}
       playlists={playlists}
       liveBroadcasts={liveBroadcasts}
+      currentBroadcasts={currentBroadcasts}
       channelId={channelId}
       activeTab={activeTab}
     />

@@ -9,6 +9,7 @@ import { ACTION_BUTTONS } from "@/components/ui/Button/ActionButtons";
 import { deletePodcastEpisode } from "@/services/azurecast/azuracastPrivateService";
 import { useRouter } from "next/navigation";
 import { Toast } from "@/components/ui/Toast";
+import { ShareButton } from "@/components/ui/ShareButton";
 
 interface PodcastEpisodesClientProps {
   episodes: PodcastEpisode[];
@@ -131,6 +132,24 @@ export default function PodcastEpisodesClient({
               : "-"}
           </div>
         ),
+      },
+      {
+        key: "share",
+        label: "Share",
+        align: "center" as const,
+        value: (item: PodcastEpisode) =>
+          item.links.public ? (
+            <ShareButton
+              url={item.links.public}
+              title={item.title}
+              text={`Check out this episode: ${item.title}`}
+              size="sm"
+              isIconOnly
+              variant="light"
+            />
+          ) : (
+            <span className="text-gray-400">-</span>
+          ),
       },
       {
         key: "actions",
