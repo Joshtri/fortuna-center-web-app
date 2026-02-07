@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardBody } from "@heroui/react";
 // import { Info, Lightbulb, AlertTriangle, XCircle } from "lucide-react";
 import { Icon } from "@iconify/react";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/text";
 
 type InfoCardType = "tip" | "info" | "warning" | "error";
 
@@ -24,7 +24,9 @@ export const InfoCard: React.FC<InfoCardProps> = ({
   const iconMap = {
     tip: <Icon icon="lucide:lightbulb" className="w-5 h-5 text-yellow-500" />,
     info: <Icon icon="lucide:info" className="w-5 h-5 text-blue-600" />,
-    warning: <Icon icon="lucide:alert-triangle" className="w-5 h-5 text-amber-600" />,
+    warning: (
+      <Icon icon="lucide:alert-triangle" className="w-5 h-5 text-amber-600" />
+    ),
     error: <Icon icon="lucide:x-circle" className="w-5 h-5 text-red-600" />,
   };
 

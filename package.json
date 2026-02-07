@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "fix-db": "bun scripts/fix-attachments-column.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.35.5",
@@ -22,6 +23,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.7",
+    "firebase": "^12.8.0",
     "framer-motion": "^12.23.24",
     "googleapis": "^166.0.0",
     "livekit-client": "^2.16.0",
@@ -31,7 +33,6 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.66.1",
-    "react-quill": "^2.0.0",
     "recharts": "^2.15.0",
     "uuid": "^13.0.0"
   },

@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { ListGrid } from "@/components/ui/ListGrid";
+import { ListGrid } from "@/components/table";
 import { Podcast } from "@/services/azurecast/interfaces";
 import { Chip, Link } from "@heroui/react";
-import { ACTION_BUTTONS } from "@/components/ui/Button/ActionButtons";
+import { ACTION_BUTTONS } from "@/components/button/ActionButtons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { deletePodcast } from "@/services/azurecast/azuracastPrivateService";
@@ -96,7 +96,7 @@ export default function PodcastListClient({
       },
     ],
 
-    []
+    [],
   );
 
   return (

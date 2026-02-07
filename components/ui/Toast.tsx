@@ -1,9 +1,15 @@
 import { addToast } from "@heroui/toast";
 
-type ToastColor = "default" | "primary" | "secondary" | "success" | "warning" | "danger";
+type ToastColor =
+  | "default"
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger";
 type ToastVariant = "solid" | "bordered" | "flat";
 
-// 
+//
 
 interface ShowToastOptions {
   title?: string;
@@ -24,7 +30,7 @@ export function Toast({
   variant = "solid",
   color,
   timeout = 3000,
-  shouldShowTimeoutProgress = true
+  shouldShowTimeoutProgress = true,
 }: ShowToastOptions) {
   // Map custom ToastColor to accepted color values
   // const colorMap: Record<

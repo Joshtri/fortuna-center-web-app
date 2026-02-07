@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { ListGrid } from "@/components/ui/ListGrid";
+import { ListGrid } from "@/components/table";
 import { PodcastEpisode } from "@/services/azurecast/interfaces";
 import { Chip, Link } from "@heroui/react";
 import Image from "next/image";
@@ -157,7 +157,7 @@ export default function PodcastEpisodesClient({
         align: "center" as const,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -170,10 +170,6 @@ export default function PodcastEpisodesClient({
       idField="id"
       nameField="title"
       searchPlaceholder="Search episodes..."
-      breadcrumbs={[
-        { label: "Podcasts", href: "/azuracast/podcast" },
-        { label: "Episodes", href: "#" },
-      ]}
       actionButtons={{
         add: {
           label: "ADD EPISODE",
