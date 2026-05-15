@@ -15,7 +15,7 @@ import { Toast } from "@/components/ui/Toast";
 export interface ShareButtonProps extends ButtonProps {
   url: string;
   title: string;
-  text?: string;
+text?: string;
   useNativeShare?: boolean;
 }
 

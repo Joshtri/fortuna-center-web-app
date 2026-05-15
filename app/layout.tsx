@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "@/providers";
 import { ClerkProviderWrapper } from "@/lib/ClerkProviderWrapper";
 import { GlobalAudioPlayer } from "@/components/GlobalAudioPlayer";
+import SiteDisabled from "@/components/SiteDisabled";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,11 +44,17 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
+const siteEnabled = process.env.NEXT_PUBLIC_SITE_ENABLED !== "false";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (!siteEnabled) {
+    return <SiteDisabled />;
+  }
+
   return (
     <ClerkProviderWrapper>
       <html lang="en" suppressHydrationWarning>
