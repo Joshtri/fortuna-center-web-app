@@ -207,7 +207,7 @@ export default function SiteDisabled() {
 
           {/* Notice card */}
           <div className="notice">
-            <p className="notice-title">Notice to Site Owner</p>
+            <p className="notice-title">Notice to Fortuna Center Owner</p>
             <p>
               Your website has been built and delivered in full, meeting all requirements
               agreed upon at the start of the project. However, the outstanding invoice
